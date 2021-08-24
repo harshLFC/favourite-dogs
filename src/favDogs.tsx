@@ -2,10 +2,11 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { Box, Button, Drawer, List, ListItem } from '@material-ui/core';
+import { Box, Button, Drawer, List, ListItem, ListItemIcon } from '@material-ui/core';
 import './App.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Close } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -59,18 +60,16 @@ export const FavouriteDogsModalComponent = ({ modalVisibility }: favouriteDogsMo
 
     return (
         <>
-            <Drawer anchor={'left'} open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+            <Drawer anchor={'left'} open={drawerOpen} onClose={() => setDrawerOpen(false)} >
                 {fav &&
                     <List>
-                        {fav.forEach((element, index) => {
+                        <ListItemIcon onClick={() => setDrawerOpen(false)}><Close /></ListItemIcon>
+                        {fav.map((element, index) => {
                             { console.log(fav[index]) }
-                            <ListItem key={index}>
-                                <img src={fav[0]} />
-                            </ListItem>
+                            return (<ListItem key={index}>
+                                <img width='50%' src={fav[index]} />
+                            </ListItem>)
                         })}
-                        <ListItem key={999}>
-                            <div>{!fav && 'No Favourites so far'}</div>
-                        </ListItem>
                     </List>
                 }
 
