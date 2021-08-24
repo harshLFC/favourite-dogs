@@ -1,10 +1,11 @@
 //basic grid layout
-import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { Button } from '@material-ui/core';
+import { Box, Button, Drawer, List, ListItem } from '@material-ui/core';
 import './App.css';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,55 +22,87 @@ export interface favouriteDogsModalProps {
     modalVisibility: (visible: boolean) => void;
 }
 
-export const FavouriteDogsModalComponent = ({ modalVisibility }: favouriteDogsModalProps) => {
+const theme = {
+    spacing: 8,
+}
 
-    return (
-        <div className="App">
-            <Grid container justifyContent="center" alignItems="center">
-                <Button variant="contained" color='primary' onClick={() => modalVisibility(false)}>
-                    Go Back
-                </Button>
-                <Grid item>
-                    <div>
-                        TEST
-                    </div>
-                </Grid>
-            </Grid>
-        </div>
-    )
+const randomColor = () => {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
 }
 
 
 
-// for other modules to 
-//     //import in the grid function. 
-//     //create class based upon class outside of export default. 
-//     const classes = useStyles();
+export const FavouriteDogsModalComponent = ({ modalVisibility }: favouriteDogsModalProps) => {
+    const [refreshImages, setRefreshImages] = useState<boolean>(false);
+    const [images, setImages] = useState<string[]>([]);
+    const [fav, setFavs] = useState<string[]>([]);
+    const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
-//     function FormRow() {
-//         return ( //return renders the grid
-//             <React.Fragment>
-//                 <Grid item xs={4}>
-//                     <Paper className={classes.paper}>item</Paper>
-//                 </Grid>
-//                 <Grid item xs={4}>
-//                     <Paper className={classes.paper}>item</Paper>
-//                 </Grid>
-//                 <Grid item xs={4}>
-//                     <Paper className={classes.paper}>item</Paper>
-//                 </Grid>
-//             </React.Fragment>
-//         );
-//     } //end of function declaration/creation FormRow()
-//     //usage of formrow element. The declaration above doesn't run. 
-//     return (<Grid container spacing={1}>
-//         <Grid container item xs={12} spacing={3}>
-//             <FormRow />
-//         </Grid>
-//         <Grid container item xs={12} spacing={3}>
-//             <FormRow />
-//         </Grid>
-//         <Grid container item xs={12} spacing={3}>
-//             <FormRow />
-//         </Grid>
-//     </Grid>)
+    const getImages = () => {
+        Array.from(Array(6), async (e, i) => {
+            const a = await axios.get('https://random.dog/woof.json')
+                .then(response => {
+                    setImages(oldArray => [...oldArray, response.data.url])
+                }).then(() => {
+                    console.log(images)
+                    // axios.get(images).then(res => {
+                    // })
+                });
+        })
+    }
+
+    useEffect(() => {
+        setRefreshImages(false);
+        setImages([]);
+        getImages();
+    }, [refreshImages]);
+
+    return (
+        <>
+            <Drawer anchor={'left'} open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+                {fav &&
+                    <List>
+                        {fav.forEach((element, index) => {
+                            { console.log(fav[index]) }
+                            <ListItem key={index}>
+                                <img src={fav[0]} />
+                            </ListItem>
+                        })}
+                        <ListItem key={999}>
+                            <div>{!fav && 'No Favourites so far'}</div>
+                        </ListItem>
+                    </List>
+                }
+
+            </Drawer>
+            <div className="App-padding">
+                <Button variant="contained" color='primary' onClick={() => modalVisibility(false)}>
+                    Go Back
+                </Button>
+                <Button variant="contained" color='primary' onClick={() => {
+                    setRefreshImages(true);
+                }}>
+                    Refresh
+                </Button>
+                <Button variant="contained" color='primary' onClick={() => {
+                    setDrawerOpen(true);
+                    console.log('should show', fav)
+                }}>
+                    Open Favourites
+                </Button>
+                <div className="Margin-top">
+                    <Grid container spacing={3} >
+                        {Array.from(Array(6), (e, i) => {
+                            return (<Grid item xs={4}>
+                                <div style={{ background: randomColor() }}>
+                                    <img width='50%' src={images[i]} />
+                                </div>
+                                <Button variant="contained" color='secondary' onClick={() => { setFavs(oldArray => [...oldArray, images[i]]) }}>Favourite</Button>
+                            </Grid>)
+                        })}
+                    </Grid>
+                </div>
+            </div >
+        </>
+    )
+}
