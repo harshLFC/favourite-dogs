@@ -1,26 +1,17 @@
 //basic grid layout
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { Box, Button, Drawer, List, ListItem, ListItemIcon, Typography } from '@material-ui/core';
+import { Button, Drawer, List, ListItem } from '@material-ui/core';
 import './App.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Close } from '@material-ui/icons';
 
 export interface favouriteDogsModalProps {
     modalVisibility: (visible: boolean) => void;
 }
 
-const theme = {
-    spacing: 8,
-}
-
 const randomColor = () => {
     return '#' + Math.floor(Math.random() * 16777215).toString(16);
 }
-
-
 
 export const FavouriteDogsModalComponent = ({ modalVisibility }: favouriteDogsModalProps) => {
     const [refreshImages, setRefreshImages] = useState<boolean>(false);
@@ -63,7 +54,6 @@ export const FavouriteDogsModalComponent = ({ modalVisibility }: favouriteDogsMo
                             })}
                         </List>
                     }
-
                 </Drawer>
             </div>
             <div className="App-padding">
@@ -96,7 +86,7 @@ export const FavouriteDogsModalComponent = ({ modalVisibility }: favouriteDogsMo
                                 <div style={{ background: randomColor() }}>
                                     <img width='50%' src={images[i]} />
                                 </div>
-                                <Button variant="contained" color='secondary' onClick={() => { setFavs(oldArray => [...oldArray, images[i]]) }}>Favourite</Button>
+                                <Button variant="contained" color='secondary' onClick={() => { !fav.includes(images[i]) && setFavs(oldArray => [...oldArray, images[i]]) }}>Favourite</Button>
                             </Grid>)
                         })}
                     </Grid>
