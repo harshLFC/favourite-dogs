@@ -2,22 +2,11 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { Box, Button, Drawer, List, ListItem, ListItemIcon } from '@material-ui/core';
+import { Box, Button, Drawer, List, ListItem, ListItemIcon, Typography } from '@material-ui/core';
 import './App.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Close } from '@material-ui/icons';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-    },
-    paper: {
-        padding: theme.spacing(1), //grid padding
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    },
-}));
 
 export interface favouriteDogsModalProps {
     modalVisibility: (visible: boolean) => void;
@@ -44,10 +33,6 @@ export const FavouriteDogsModalComponent = ({ modalVisibility }: favouriteDogsMo
             const a = await axios.get('https://random.dog/woof.json')
                 .then(response => {
                     setImages(oldArray => [...oldArray, response.data.url])
-                }).then(() => {
-                    console.log(images)
-                    // axios.get(images).then(res => {
-                    // })
                 });
         })
     }
@@ -60,35 +45,50 @@ export const FavouriteDogsModalComponent = ({ modalVisibility }: favouriteDogsMo
 
     return (
         <>
-            <Drawer anchor={'left'} open={drawerOpen} onClose={() => setDrawerOpen(false)} >
-                {fav &&
-                    <List>
-                        <ListItemIcon onClick={() => setDrawerOpen(false)}><Close /></ListItemIcon>
-                        {fav.map((element, index) => {
-                            { console.log(fav[index]) }
-                            return (<ListItem key={index}>
-                                <img width='50%' src={fav[index]} />
-                            </ListItem>)
-                        })}
-                    </List>
-                }
+            <div className="Drawer-width">
+                <Drawer anchor={'right'} open={drawerOpen} onClose={() => setDrawerOpen(false)} >
+                    <h2>
+                        Your Favourite Dogs
+                    </h2>
+                    {fav &&
+                        <List>
+                            <Button variant="contained" color='secondary' onClick={() => setDrawerOpen(false)}>
+                                Close Favourites
+                            </Button>
+                            {fav.map((element, index) => {
+                                { console.log(fav[index]) }
+                                return (<ListItem key={index}>
+                                    <img width='50%' src={fav[index]} />
+                                </ListItem>)
+                            })}
+                        </List>
+                    }
 
-            </Drawer>
+                </Drawer>
+            </div>
             <div className="App-padding">
-                <Button variant="contained" color='primary' onClick={() => modalVisibility(false)}>
-                    Go Back
-                </Button>
-                <Button variant="contained" color='primary' onClick={() => {
-                    setRefreshImages(true);
-                }}>
-                    Refresh
-                </Button>
-                <Button variant="contained" color='primary' onClick={() => {
-                    setDrawerOpen(true);
-                    console.log('should show', fav)
-                }}>
-                    Open Favourites
-                </Button>
+                <Grid container>
+                    <Grid item xs={4}>
+                        <Button variant="contained" color='primary' onClick={() => modalVisibility(false)}>
+                            Go Back
+                        </Button>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Button variant="contained" color='primary' onClick={() => {
+                            setRefreshImages(true);
+                        }}>
+                            Refresh
+                        </Button>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Button variant="contained" color='primary' onClick={() => {
+                            setDrawerOpen(true);
+                            console.log('should show', fav)
+                        }}>
+                            Open Favourites
+                        </Button>
+                    </Grid>
+                </Grid>
                 <div className="Margin-top">
                     <Grid container spacing={3} >
                         {Array.from(Array(6), (e, i) => {

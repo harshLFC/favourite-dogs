@@ -24,6 +24,10 @@
   color: white;
 }
 
+.Drawer-width {
+  width: 20em;
+}
+
 .App-padding {
   padding: 3em;
 }
