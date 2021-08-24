@@ -47,7 +47,6 @@ export const FavouriteDogsModalComponent = ({ modalVisibility }: favouriteDogsMo
                                 Close Favourites
                             </Button>
                             {fav.map((element, index) => {
-                                { console.log(fav[index]) }
                                 return (<ListItem key={index}>
                                     <img width='50%' src={fav[index]} />
                                 </ListItem>)
@@ -73,7 +72,6 @@ export const FavouriteDogsModalComponent = ({ modalVisibility }: favouriteDogsMo
                     <Grid item xs={4}>
                         <Button variant="contained" color='primary' onClick={() => {
                             setDrawerOpen(true);
-                            console.log('should show', fav)
                         }}>
                             Open Favourites
                         </Button>
